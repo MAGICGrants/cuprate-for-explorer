@@ -35,7 +35,7 @@ pub enum Transaction {
         /// This field is [flattened](https://serde.rs/field-attrs.html#flatten).
         #[cfg_attr(feature = "serde", serde(flatten))]
         prefix: TransactionPrefix,
-        signatures: Vec<Hex<64>>,
+        // signatures: Vec<Hex<64>>,
     },
     V2 {
         /// This field is [flattened](https://serde.rs/field-attrs.html#flatten).
@@ -76,7 +76,7 @@ impl Default for Transaction {
     fn default() -> Self {
         Self::V1 {
             prefix: Default::default(),
-            signatures: Default::default(),
+            // signatures: Default::default(),
         }
     }
 }
@@ -162,15 +162,15 @@ impl From<transaction::Transaction> for Transaction {
         match tx {
             transaction::Transaction::V1 { prefix, signatures } => Self::V1 {
                 prefix: map_prefix(prefix, 1),
-                signatures: signatures
-                    .into_iter()
-                    .map(|sig| {
-                        // TODO: `RingSignature` needs to expose the
-                        // inner `Signature` struct as a byte array.
-                        let sig_to_64_bytes = |sig| -> Hex<64> { todo!() };
-                        sig_to_64_bytes(sig)
-                    })
-                    .collect(),
+                // signatures: signatures
+                //     .into_iter()
+                //     .map(|sig| {
+                //         // TODO: `RingSignature` needs to expose the
+                //         // inner `Signature` struct as a byte array.
+                //         let sig_to_64_bytes = |sig| -> Hex<64> { todo!() };
+                //         sig_to_64_bytes(sig)
+                //     })
+                //     .collect(),
             },
             transaction::Transaction::V2 { prefix, proofs } => {
                 let prefix = map_prefix(prefix, 2);
@@ -215,12 +215,12 @@ impl From<transaction::Transaction> for Transaction {
                     outPk,
                 };
 
-                let rctsig_prunable = Some(RctSigPrunable::from(proofs.prunable));
+                // let rctsig_prunable = Some(RctSigPrunable::from(proofs.prunable));
 
                 Self::V2 {
                     prefix,
                     rct_signatures,
-                    rctsig_prunable,
+                    rctsig_prunable: None,
                 }
             }
         }
@@ -545,11 +545,11 @@ mod test {
                     218, 222, 27, 66, 129, 115, 185, 5, 113, 142, 40, 157, 70, 87, 62,
                 ],
             },
-            signatures: vec![
-              Hex(hex!("318755c67c5d3379b0958a047f5439cf43dd251f64b6314c84b2edbf240d950abbeaad13233700e6b6c59bea178c6fbaa246b8fd84b5caf94d1affd520e6770b")),
-              Hex(hex!("a47e6a65e907e49442828db46475ecdf27f3c472f24688423ac97f0efbd8b90b164ed52c070f7a2a95b95398814b19c0befd14a4aab5520963daf3482604df01")),
-              Hex(hex!("fa6981c969c2a1b9d330a8901d2ef7def7f3ade8d9fba444e18e7e349e286a035ae1729a76e01bbbb3ccd010502af6c77049e3167cf108be69706a8674b0c508"))
-            ],
+            // signatures: vec![
+            //   Hex(hex!("318755c67c5d3379b0958a047f5439cf43dd251f64b6314c84b2edbf240d950abbeaad13233700e6b6c59bea178c6fbaa246b8fd84b5caf94d1affd520e6770b")),
+            //   Hex(hex!("a47e6a65e907e49442828db46475ecdf27f3c472f24688423ac97f0efbd8b90b164ed52c070f7a2a95b95398814b19c0befd14a4aab5520963daf3482604df01")),
+            //   Hex(hex!("fa6981c969c2a1b9d330a8901d2ef7def7f3ade8d9fba444e18e7e349e286a035ae1729a76e01bbbb3ccd010502af6c77049e3167cf108be69706a8674b0c508"))
+            // ],
         };
 
         test(tx, JSON);
